@@ -218,10 +218,36 @@ const fetchAllStudents = asyncHandler( async(req,res) => {
 })
 
 
+const removeStudent = asyncHandler( async(req,res) => {
+  const studentId = req.params.id
+  if (!studentId) {
+    throw new ApiError(400,"kindly provide valid student Id")
+  }
+
+  const removeS = await Student.findByIdAndDelete(studentId)
+
+  if (!removeS) {
+    throw new ApiError(500,"unable to remove studnet , contact the authority")
+  }
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      removeS,
+      `studnet removed successfully`
+    )
+  )
+
+
+})
+
 export { 
     registerAdmin,
     loginAdmin, 
     logOutAdmin, 
     changePassword,
-    fetchAllStudents
+    fetchAllStudents,
+    removeStudent
 };

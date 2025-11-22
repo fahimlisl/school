@@ -20,10 +20,12 @@ import onlineRegsitrationRouter from "./routes/onlineRegistration.routes.js"
 import adminRouter from "./routes/admin.routes.js"
 import studentRouter from "./routes/student.routes.js"
 import feeRouter from "./routes/fee.routes.js"
+import teacherRouter from "./routes/teacher.routes.js"
 // route declaration
 app.use('/api/v1/admissionStudent',onlineRegsitrationRouter)
 app.use('/api/v1/admin',adminRouter)
 app.use('/api/v1/student',studentRouter)
 app.use('/api/v1/fee',feeRouter)
+app.use('/api/v1/teacher',teacherRouter)
 
 export {app}

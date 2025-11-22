@@ -207,7 +207,7 @@ return res
 })
 
 const getStudentProfile = asyncHandler(async (req, res) => {
-  req.params._id // returns undefiend
+  // req.params._id // returns undefiend
   const studentId = req.params.id
   console.log(`this is req.params.id ${req.params.id}`)
 
