@@ -64,6 +64,10 @@ const studnetSchema = new mongoose.Schema(
       admissionFee: { type: Boolean, default: false },
       adittionalFees: { type: Boolean, default: false },
     },
+    marksheet:{
+      type : Schema.Types.ObjectId,
+      ref:"Marksheet"
+    }
 
     // have to add more fields like result of previous class , and the permission of uploading fields will be only avaible for admin and teacher no one outside admin and teacher can add those fields
   },

@@ -5,6 +5,15 @@ import { Student } from "../models/student.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { options } from "../utils/options.js";
 import { Fee } from "../models/feeStructure.models.js";
+import { Marksheet } from "../models/marksheet.models.js";
+
+
+const subjectTemplate = {
+    1 : ["Math","English","Bengali","SST","Geography"],
+    2 : ["Math","English","Bengali","SST","Biology"],
+    3 : ["Math","English","Physic","Chemsitry","SST"],
+    4 : ["Math","English","Biology","Chemsitry"]
+}
 
 
 const generateAccessAndRefreshToken = async function (userId) {
@@ -71,16 +80,16 @@ const registerStudent = asyncHandler(async (req, res) => {
   console.log(`file uploaded successfully link is ${uploadedFile.url}`); // im goonna remove this console at the end after checking the api
 
   const feeS = await Fee.findOne({ classAssign: currentClass });
-
+  
   if (!feeS) {
     throw new ApiError(
       500,
       "fee sturecutre for the speicified class wasn't able to found"
     );
   }
-
+  
   console.log(`logging what is feeS is ${feeS}`);
-
+  
   const createdStudent = await Student.create({
     fullName,
     email,
@@ -95,13 +104,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     feesPaid,
   });
 
-  const studentWithFees = await Student.findById(createdStudent._id).populate(
-    "feeStructure"
-  ); // using populate ill only get the values in json response
-
-  console.log(
-    `seeign what the studentWithFees prints and that populate ${studentWithFees}`
-  );
+  // const studentWithFees = await Student.findById(createdStudent._id).populate("feeStructure"); // using populate ill only get the values in json response
 
   if (!createdStudent) {
     throw new ApiError(
@@ -110,20 +113,39 @@ const registerStudent = asyncHandler(async (req, res) => {
     );
   }
 
-  const studnet = await Student.findById(createdStudent._id);
+  //writing marlksheet logic here 
 
-  if (!studnet) {
-    throw new ApiError(500, "soemthing went wrong whiel creating studnet");
-  }
+  const assignedMarksheet = subjectTemplate[currentClass]
 
-  console.log("student created sucessfuly"); // remove this file after file execution
+  const subjectObject = assignedMarksheet.map(sub => ({
+    subjectName : sub,
+    maxMarks : 100,
+    obtainedMarks: 0,
+    teacher: null,
+    isSubmitted: false
+  }))
+  
+  const wholeMarksheet = await Marksheet.create({
+    student:createdStudent._id,
+    subjects:subjectObject
+  })
+
+  await Student.findByIdAndUpdate(createdStudent._id,{
+    $set:{
+      marksheet:wholeMarksheet._id
+    }
+  })
+
+  const finalStudnet = await Student.findById(createdStudent._id)
+  .populate("marksheet")
+  .populate("feeStructure")
+
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        createdStudent,
-        studentWithFees,
+        finalStudnet,
         "student created successfully"
       )
     );
