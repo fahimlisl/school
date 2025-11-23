@@ -6,15 +6,14 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { options } from "../utils/options.js";
 import { Fee } from "../models/feeStructure.models.js";
 import { Marksheet } from "../models/marksheet.models.js";
-
+import { Teacher } from "../models/teacher.models.js";
 
 const subjectTemplate = {
-    1 : ["Math","English","Bengali","SST","Geography"],
-    2 : ["Math","English","Bengali","SST","Biology"],
-    3 : ["Math","English","Physic","Chemsitry","SST"],
-    4 : ["Math","English","Biology","Chemsitry"]
-}
-
+  1: ["Math", "English", "Bengali", "SST", "Geography"],
+  2: ["Math", "English", "Bengali", "SST", "Biology"],
+  3: ["Math", "English", "Physic", "Chemsitry", "SST"],
+  4: ["Math", "English", "Biology", "Chemsitry"],
+};
 
 const generateAccessAndRefreshToken = async function (userId) {
   const userS = await Student.findById(userId);
@@ -80,16 +79,16 @@ const registerStudent = asyncHandler(async (req, res) => {
   console.log(`file uploaded successfully link is ${uploadedFile.url}`); // im goonna remove this console at the end after checking the api
 
   const feeS = await Fee.findOne({ classAssign: currentClass });
-  
+
   if (!feeS) {
     throw new ApiError(
       500,
       "fee sturecutre for the speicified class wasn't able to found"
     );
   }
-  
+
   console.log(`logging what is feeS is ${feeS}`);
-  
+
   const createdStudent = await Student.create({
     fullName,
     email,
@@ -104,8 +103,6 @@ const registerStudent = asyncHandler(async (req, res) => {
     feesPaid,
   });
 
-  // const studentWithFees = await Student.findById(createdStudent._id).populate("feeStructure"); // using populate ill only get the values in json response
-
   if (!createdStudent) {
     throw new ApiError(
       500,
@@ -113,42 +110,62 @@ const registerStudent = asyncHandler(async (req, res) => {
     );
   }
 
-  //writing marlksheet logic here 
+  //writing marlksheet logic here
 
-  const assignedMarksheet = subjectTemplate[currentClass]
+  // const letsSee = await Promise.all(
+  //   respectiveSub.map(sub => Teacher.findOne({ subject: sub }))
+  // )
 
-  const subjectObject = assignedMarksheet.map(sub => ({
-    subjectName : sub,
-    maxMarks : 100,
-    obtainedMarks: 0,
-    teacher: null,
-    isSubmitted: false
-  }))
+  // console.log(letsSee)
+
+  // const teacherIds = letsSee.map(t => t._id)
+
+  // console.log(teacherIds)
   
-  const wholeMarksheet = await Marksheet.create({
-    student:createdStudent._id,
-    subjects:subjectObject
-  })
+  const respectiveSub = subjectTemplate[currentClass];
 
-  await Student.findByIdAndUpdate(createdStudent._id,{
-    $set:{
-      marksheet:wholeMarksheet._id
-    }
-  })
+  const assignedSubjects = await Promise.all(
+    respectiveSub.map(async (sub) => {
+      const teacher = await Teacher.findOne({ subject: sub });
+
+      return {
+        subjectName: sub,
+        maxMarks: 100,
+        obtainedMarks: 0,
+        teacher: teacher ? teacher._id : null,
+        isSubmitted: false,
+      };
+    })
+  );
+
+  // const assignedMarksheet = subjectTemplate[currentClass];
+
+  // const subjectObject = assignedMarksheet.map((sub) => ({
+  //   subjectName: sub,
+  //   maxMarks: 100,
+  //   obtainedMarks: 0,
+  //   teacher: null,
+  //   isSubmitted: false,
+  // }));
+
+  const wholeMarksheet = await Marksheet.create({
+    student: createdStudent._id,
+    subjects: assignedSubjects,
+  });
+
+  await Student.findByIdAndUpdate(createdStudent._id, {
+    $set: {
+      marksheet: wholeMarksheet._id,
+    },
+  });
 
   const finalStudnet = await Student.findById(createdStudent._id)
-  .populate("marksheet")
-  .populate("feeStructure")
+    .populate("marksheet")
+    .populate("feeStructure");
 
   return res
     .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        finalStudnet,
-        "student created successfully"
-      )
-    );
+    .json(new ApiResponse(200, finalStudnet, "student created successfully"));
 });
 
 const loginStudent = asyncHandler(async (req, res) => {
@@ -201,58 +218,48 @@ const loginStudent = asyncHandler(async (req, res) => {
     );
 });
 
-const logOutStudent = asyncHandler( async(req,res) => {
-
-  const user = await Student.findByIdAndUpdate(req.user._id,{
-    $unset:{
-      refreshToken: ""
+const logOutStudent = asyncHandler(async (req, res) => {
+  const user = await Student.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: "",
+      },
     },
-  },
-  {
-    new:true
-  }
-)
+    {
+      new: true,
+    }
+  );
 
-
-return res
-.status(200)
-.clearCookie("refreshToken",options)
-.clearCookie("accessToken",options)
-.json(
-  new ApiResponse(
-    200,
-    {},
-    "student logged out successfully"
-  )
-)
-
-})
+  return res
+    .status(200)
+    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", options)
+    .json(new ApiResponse(200, {}, "student logged out successfully"));
+});
 
 const getStudentProfile = asyncHandler(async (req, res) => {
   // req.params._id // returns undefiend
-  const studentId = req.params.id
-  console.log(`this is req.params.id ${req.params.id}`)
+  const studentId = req.params.id;
+  console.log(`this is req.params.id ${req.params.id}`);
 
-  // req.params.id // returns the proper thing , 
+  // req.params.id // returns the proper thing ,
 
-  // 'req.params' doesn't specifilcly returns anything , gotta dive more deep into it 
+  // 'req.params' doesn't specifilcly returns anything , gotta dive more deep into it
 
-  const wantedStudent  = await Student.findById(studentId)
-  .populate("feeStructure")
+  const wantedStudent = await Student.findById(studentId).populate(
+    "feeStructure"
+  );
 
   if (!wantedStudent) {
-    throw new ApiError(400,"studnet wasn't found!")
+    throw new ApiError(400, "studnet wasn't found!");
   }
 
   return res
-  .status(200)
-  .json( new ApiResponse(
-    200,
-    wantedStudent,
-    "student data fetched successfully"
-  ))
+    .status(200)
+    .json(
+      new ApiResponse(200, wantedStudent, "student data fetched successfully")
+    );
 });
 
-
-
-export { registerStudent, loginStudent, getStudentProfile,logOutStudent };
+export { registerStudent, loginStudent, getStudentProfile, logOutStudent };
