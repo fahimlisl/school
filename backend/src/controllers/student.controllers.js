@@ -109,7 +109,6 @@ const registerStudent = asyncHandler(async (req, res) => {
       "internal server error , fialed to created studnet"
     );
   }
-
   //writing marlksheet logic here
 
   // const letsSee = await Promise.all(
@@ -121,12 +120,15 @@ const registerStudent = asyncHandler(async (req, res) => {
   // const teacherIds = letsSee.map(t => t._id)
 
   // console.log(teacherIds)
-  
+
   const respectiveSub = subjectTemplate[currentClass];
 
   const assignedSubjects = await Promise.all(
     respectiveSub.map(async (sub) => {
-      const teacher = await Teacher.findOne({ subject: sub });
+      const teacher = await Teacher.findOne({
+        subject: sub.toLowerCase(),
+        classAssigned: {$in:[currentClass]}
+      });
 
       return {
         subjectName: sub,

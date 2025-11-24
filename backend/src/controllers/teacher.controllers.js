@@ -6,9 +6,9 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerTeacher = asyncHandler( async(req,res) => {
     
-    const {fullName,email,phoneNumber,subject,password} = req.body
+    const {fullName,email,phoneNumber,subject,password,classAssigned} = req.body
 
-    if([fullName,email,phoneNumber,subject,password].some((f) => !f && f !== 0 )){
+    if([fullName,email,phoneNumber,subject,password,classAssigned].some((f) => !f && f !== 0 )){
         throw new ApiError(401,"all fields are required")
     }
 
@@ -27,7 +27,8 @@ const registerTeacher = asyncHandler( async(req,res) => {
         email,
         phoneNumber,
         subject,
-        password
+        password,
+        classAssigned
     })
 
     if (!teacher) {

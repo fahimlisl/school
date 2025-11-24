@@ -21,6 +21,7 @@ const teacherSchema = new mongoose.Schema(
     subject: {
       type: String,
       required: true,
+      lowercase:true
     },
     password: {
       type: String,
@@ -29,6 +30,12 @@ const teacherSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
     },
+    classAssigned:[
+      {
+        type:Number,
+        required:true
+      }
+    ],
   },
   { timestamps: true }
 );
