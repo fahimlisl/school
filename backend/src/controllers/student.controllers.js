@@ -131,7 +131,7 @@ const registerStudent = asyncHandler(async (req, res) => {
       });
 
       return {
-        subjectName: sub,
+        subjectName: sub.toLowerCase(),
         maxMarks: 100,
         obtainedMarks: 0,
         teacher: teacher ? teacher._id : null,

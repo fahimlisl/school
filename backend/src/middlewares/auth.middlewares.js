@@ -11,10 +11,11 @@ export const verifyJWT = async(req,_,next) => {
         }
 
         const decodeToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-        console.log(`this is the log of decodedToken ${decodeToken} and its type ${typeof decodeToken}`)
+
+
         const user = await Admin.findById(decodeToken?._id).select("-password -refreshToken")
 
-        console.log("lets see what user logs in auth middleware ",user)
+
         if (!user) {
             throw new ApiError(500,"uswer wasn't foudn , or inavalid request")
         }

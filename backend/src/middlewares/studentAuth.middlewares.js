@@ -12,14 +12,14 @@ export const verifyJWTstudent = async (req,_,next) => {
             throw new ApiError(401,"unauthorized access")
         }
 
-        const user = await Student.findById(decodedToken._id)
+        const user = await Student.findById(decodedToken._id).select("-password -refreshToken")
 
         if (!user) {
             throw new ApiError(401,"unauthorized access")
         }
 
         req.user = user
-        user.save({validateBeforeSave:false})
+        // user.save({validateBeforeSave:false})
 
         next()
 

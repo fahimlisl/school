@@ -107,12 +107,18 @@ const loginAdmin = asyncHandler(async (req, res) => {
 });
 
 const logOutAdmin = asyncHandler(async (req, res) => {
+  const userId = req.user._id
+
+    if (!userId) {
+        throw new ApiError(400,"userId wasn't able to found , unauthroized access")
+    }
+  const user = await Admin.findById(req.user._id)
+  if (!user) {
+    throw new ApiError(400,"user isn't logged in yet , or unauthorized access")
+  }
   await Admin.findByIdAndUpdate(
     req.user._id,
     {
-    //   $set: {
-    //     refreshToken: undefined,
-    //   },
          $unset: { refreshToken: "" } ,   
     },
     {

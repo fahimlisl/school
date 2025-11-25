@@ -3,6 +3,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { Teacher } from "../models/teacher.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { options } from "../utils/options.js";
+import { Student } from "../models/student.models.js";
+import { Marksheet } from "../models/marksheet.models.js";
 
 const generateAcessAndRefreshToken = async (userId) => {
   try {
@@ -110,9 +112,76 @@ const loginTeacher = asyncHandler(async (req, res) => {
     );
 });
 
-const assignMarksToStudent = asyncHandler(async (req, res) => {
-  // const { subject } = req.params.id.subject // write verifyJWTTeacher then proceded ,,,,
-  // 9480801058
+const logOutTeacher = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  console.log(req.user._id);
+  if (!userId) {
+    throw new ApiError(
+      400,
+      "userId wasn't able to found , unauthroized access"
+    );
+  }
+
+  const user = await Teacher.findById(userId);
+
+  if (!user) {
+    throw new ApiError(400, "tacher doesn't exist");
+  }
+
+  await Teacher.findByIdAndUpdate(
+    userId,
+    {
+      $unset: {
+        refreshToken: "",
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return res
+    .status(200)
+    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", options)
+    .json(new ApiResponse(200, {}, "user logged out successfully"));
 });
 
-export { registerTeacher, loginTeacher };
+const assignMarksToStudent = asyncHandler(async (req, res) => {
+  const teacherId = req.user._id
+  const studentId = req.params.id
+  
+
+  const {obtainedMarks} = req.body
+  if (!obtainedMarks) {
+    throw new ApiError(400,"obtains marks required")
+  }
+
+  const updatedMarksheet = await Marksheet.updateOne(
+    {
+      student:studentId,
+      "subjects.teacher": teacherId 
+    },
+    {
+      $set: {
+        "subjects.$.obtainedMarks": obtainedMarks,
+        "subjects.$.isSubmitted": true
+      }
+    }
+  )
+
+    if (updatedMarksheet.modifiedCount === 0) {
+    throw new ApiError(
+      403,
+      "You are not allowed to update this subject OR subject not found."
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Marks updated successfully"));
+
+
+});
+
+export { registerTeacher, loginTeacher, logOutTeacher ,assignMarksToStudent };
