@@ -121,6 +121,7 @@ const registerStudent = asyncHandler(async (req, res) => {
 
   // console.log(teacherIds)
 
+
   const respectiveSub = subjectTemplate[currentClass];
 
   const assignedSubjects = await Promise.all(
@@ -140,19 +141,19 @@ const registerStudent = asyncHandler(async (req, res) => {
     })
   );
 
-  // const assignedMarksheet = subjectTemplate[currentClass];
-
-  // const subjectObject = assignedMarksheet.map((sub) => ({
-  //   subjectName: sub,
-  //   maxMarks: 100,
-  //   obtainedMarks: 0,
-  //   teacher: null,
-  //   isSubmitted: false,
-  // }));
+  const termsArray = [1,2,3].map(term => ({
+    term,
+    subjects: assignedSubjects.map(s => ({
+      ...s,
+          obtainedMarks: 0,
+    isSubmitted: false
+    }))
+  }))
 
   const wholeMarksheet = await Marksheet.create({
     student: createdStudent._id,
-    subjects: assignedSubjects,
+    // subjects: assignedSubjects,
+    terms:termsArray
   });
 
   await Student.findByIdAndUpdate(createdStudent._id, {

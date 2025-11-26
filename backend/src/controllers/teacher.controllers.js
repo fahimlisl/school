@@ -147,38 +147,98 @@ const logOutTeacher = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "user logged out successfully"));
 });
 
+
+
+// not tusing this method now , getting a lil complex , will upgrade to id , after getting replacement form the last one 
+
+// const assignMarksToStudent = asyncHandler(async (req, res) => {
+//   const teacherId = req.user._id;
+//   const studentId = req.params.id;
+
+//   const { obtainedMarks } = req.body;
+//   if (!obtainedMarks) {
+//     throw new ApiError(400, "obtains marks required");
+//   }
+
+//   const updatedMarksheet = await Marksheet.updateOne(
+//     {
+//       student: studentId,
+//       "terms.subjects.teacher": teacherId,
+//       // "terms.term":1
+//     },
+//     {
+//       $set: {
+//         // "subjects.$.obtainedMarks": obtainedMarks,
+//         // "subjects.$.isSubmitted": true,
+//         "terms.$[term].subjects.$[sub].obtainedMarks":obtainedMarks,
+//         "terms.$[term].subjects.$[sub].isSubmitted":true
+//       },
+//     },
+
+//   {
+//     arrayFilters: [
+//       { "terms.term": term },                      // matches selected term
+//       { 
+//         "sub.subjectName": subjectName.toLowerCase(),
+//         "sub.teacher": teacherId                  // ensures teacher owns subject
+//       }
+//     ]
+//   }
+//   );
+
+//   if (updatedMarksheet.modifiedCount === 0) {
+//     throw new ApiError(
+//       403,
+//       "You are not allowed to update this subject OR subject not found."
+//     );
+//   }
+
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, {}, "Marks updated successfully"));
+// });
+
+
+
 const assignMarksToStudent = asyncHandler(async (req, res) => {
   const teacherId = req.user._id;
   const studentId = req.params.id;
 
-  const { obtainedMarks } = req.body;
+  const { term , obtainedMarks } = req.body;
+  // const term = 1;  // i can hardcore if i want later
+
   if (!obtainedMarks) {
-    throw new ApiError(400, "obtains marks required");
+    throw new ApiError(400, "obtainedMarks required");
   }
 
-  const updatedMarksheet = await Marksheet.updateOne(
-    {
-      student: studentId,
-      "subjects.teacher": teacherId,
-    },
-    {
-      $set: {
-        "subjects.$.obtainedMarks": obtainedMarks,
-        "subjects.$.isSubmitted": true,
-      },
-    }
+  const marksheet = await Marksheet.findOne({ student: studentId });
+
+  if (!marksheet) {
+    throw new ApiError(404, "Marksheet not found");
+  }
+
+  const termObj = marksheet.terms.find(t => t.term === term);
+  console.log(termObj)
+  if (!termObj) {
+    throw new ApiError(404, "Term not found");
+  }
+
+  // finding the subject where the teacherId matches
+  const subjectObj = termObj.subjects.find(
+    s => String(s.teacher) === String(teacherId)
   );
-
-  if (updatedMarksheet.modifiedCount === 0) {
-    throw new ApiError(
-      403,
-      "You are not allowed to update this subject OR subject not found."
-    );
+  if (!subjectObj) {
+    throw new ApiError(403, "You are not allowed to update this subject");
   }
+  subjectObj.obtainedMarks = obtainedMarks;
+  subjectObj.isSubmitted = true;
+
+  await marksheet.save();
 
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Marks updated successfully"));
 });
+
 
 export { registerTeacher, loginTeacher, logOutTeacher, assignMarksToStudent };
