@@ -13,7 +13,6 @@ const marksheetSchema = new mongoose.Schema(
       {
         subjectName: {
           type: String ,
-        //   default:[subjectTemplate(value)],
           required: true,
         },
         maxMarks: {

@@ -251,7 +251,7 @@ const getStudentProfile = asyncHandler(async (req, res) => {
 
   const wantedStudent = await Student.findById(studentId).populate(
     "feeStructure"
-  );
+  ).populate("marksheet");
 
   if (!wantedStudent) {
     throw new ApiError(400, "studnet wasn't found!");

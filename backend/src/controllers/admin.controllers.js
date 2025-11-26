@@ -183,7 +183,7 @@ const fetchAllStudents = asyncHandler( async(req,res) => {
 
   const students = await Student
     .find({ currentClass: getClass })
-    .populate("feeStructure");
+    .populate("feeStructure").populate("marksheet");
 
   // const students = await Student.aggregate([
   //   {

@@ -148,29 +148,28 @@ const logOutTeacher = asyncHandler(async (req, res) => {
 });
 
 const assignMarksToStudent = asyncHandler(async (req, res) => {
-  const teacherId = req.user._id
-  const studentId = req.params.id
-  
+  const teacherId = req.user._id;
+  const studentId = req.params.id;
 
-  const {obtainedMarks} = req.body
+  const { obtainedMarks } = req.body;
   if (!obtainedMarks) {
-    throw new ApiError(400,"obtains marks required")
+    throw new ApiError(400, "obtains marks required");
   }
 
   const updatedMarksheet = await Marksheet.updateOne(
     {
-      student:studentId,
-      "subjects.teacher": teacherId 
+      student: studentId,
+      "subjects.teacher": teacherId,
     },
     {
       $set: {
         "subjects.$.obtainedMarks": obtainedMarks,
-        "subjects.$.isSubmitted": true
-      }
+        "subjects.$.isSubmitted": true,
+      },
     }
-  )
+  );
 
-    if (updatedMarksheet.modifiedCount === 0) {
+  if (updatedMarksheet.modifiedCount === 0) {
     throw new ApiError(
       403,
       "You are not allowed to update this subject OR subject not found."
@@ -180,8 +179,6 @@ const assignMarksToStudent = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Marks updated successfully"));
-
-
 });
 
-export { registerTeacher, loginTeacher, logOutTeacher ,assignMarksToStudent };
+export { registerTeacher, loginTeacher, logOutTeacher, assignMarksToStudent };
