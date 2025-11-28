@@ -38,15 +38,20 @@ const registerStudent = asyncHandler(async (req, res) => {
     section,
     admissionDate,
     feesPaid,
+    DOB
   } = req.body;
 
-  console.log(
-    `checking wheather im receving the body by fullName : ${fullName}`
-  );
+  if (!admissionDate) {
+    throw new ApiError(400,"admission date required")
+  }
+
+  if (!DOB) {
+    throw new ApiError(400,"date of birth of studnet is required")
+  }
+
   if (
     [
       fullName,
-      password,
       email,
       gurdianName,
       section,
@@ -76,7 +81,6 @@ const registerStudent = asyncHandler(async (req, res) => {
 
   const uploadedFile = await uploadOnCloudinary(profilePhotoPath);
 
-  console.log(`file uploaded successfully link is ${uploadedFile.url}`); // im goonna remove this console at the end after checking the api
 
   const feeS = await Fee.findOne({ classAssign: currentClass });
 
@@ -87,7 +91,16 @@ const registerStudent = asyncHandler(async (req, res) => {
     );
   }
 
-  console.log(`logging what is feeS is ${feeS}`);
+  // password ddmmyyyy format
+const formatDOBPassword = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}${month}${year}`;
+};
+
+const dobPassword = formatDOBPassword(DOB)
 
   const createdStudent = await Student.create({
     fullName,
@@ -95,9 +108,10 @@ const registerStudent = asyncHandler(async (req, res) => {
     phoneNumber,
     currentClass,
     gurdianName,
-    password,
+    DOB:new Date(DOB),
+    password:dobPassword,
     section,
-    admissionDate,
+    admissionDate:new Date(admissionDate),
     profilePhoto: uploadedFile.url || "",
     feeStructure: feeS._id,
     feesPaid,
@@ -152,7 +166,6 @@ const registerStudent = asyncHandler(async (req, res) => {
 
   const wholeMarksheet = await Marksheet.create({
     student: createdStudent._id,
-    // subjects: assignedSubjects,
     terms:termsArray
   });
 

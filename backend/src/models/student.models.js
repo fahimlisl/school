@@ -43,7 +43,11 @@ const studnetSchema = new mongoose.Schema(
       ref: "Fee",
     },
     admissionDate: {
-      type: String, // need to change the type from string to date
+      type: Date, // need to change the type from string to date
+    },
+    DOB:{
+      type:Date,
+      required:true
     },
     refreshToken: {
       type: String,
