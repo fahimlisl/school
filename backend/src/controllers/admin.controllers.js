@@ -1,8 +1,10 @@
 import { Admin } from "../models/admin.models.js";
+import { Marksheet } from "../models/marksheet.models.js";
 import { Student } from "../models/student.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
+import { deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -225,6 +227,19 @@ const removeStudent = asyncHandler(async (req, res) => {
 
   if (!removeS) {
     throw new ApiError(500, "unable to remove studnet , contact the authority");
+  }
+
+  // ddleting marksheet reffered to the same student
+  await Marksheet.findByIdAndDelete(removeS.marksheet)
+
+  // deleting image from clodinary
+  const url = removeS.profilePhoto
+  const result = url.split('/').pop().split('.')[0];
+
+  const deleteFileFromCloudinary = await deleteFromCloudinary(result)
+
+  if (!deleteFileFromCloudinary) {
+    throw new ApiError(500,"wasn't able to delete, due to some internal error")
   }
 
   return res
