@@ -18,6 +18,10 @@ const subjectSchema = new mongoose.Schema({
           type: Schema.Types.ObjectId,
           ref: "Teacher",
         },
+        percentage:{
+          type:Number,
+          default:0,
+        },
         isSubmitted: {
           type: Boolean,
           default: false,
@@ -30,6 +34,7 @@ const termSchema = new mongoose.Schema({
     enum:[1,2,3]
   },
     subjects: [subjectSchema],
+    percentage: { type: Number, default: 0 },
 
 },{timestamps:false})
 
@@ -68,7 +73,7 @@ const marksheetSchema = new mongoose.Schema(
 
     terms:[termSchema],
     total: { type: Number, default: 0 },
-    percentage: { type: Number, default: 0 },
+    // percentage: { type: Number, default: 0 },
     grade: { type: String, default: "N/A" },
   },
   { timestamps: true }

@@ -147,9 +147,7 @@ const logOutTeacher = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "user logged out successfully"));
 });
 
-
-
-// not tusing this method now , getting a lil complex , will upgrade to id , after getting replacement form the last one 
+// not tusing this method now , getting a lil complex , will upgrade to id , after getting replacement form the last one
 
 // const assignMarksToStudent = asyncHandler(async (req, res) => {
 //   const teacherId = req.user._id;
@@ -178,7 +176,7 @@ const logOutTeacher = asyncHandler(async (req, res) => {
 //   {
 //     arrayFilters: [
 //       { "terms.term": term },                      // matches selected term
-//       { 
+//       {
 //         "sub.subjectName": subjectName.toLowerCase(),
 //         "sub.teacher": teacherId                  // ensures teacher owns subject
 //       }
@@ -198,13 +196,11 @@ const logOutTeacher = asyncHandler(async (req, res) => {
 //     .json(new ApiResponse(200, {}, "Marks updated successfully"));
 // });
 
-
-
 const assignMarksToStudent = asyncHandler(async (req, res) => {
   const teacherId = req.user._id;
   const studentId = req.params.id;
 
-  const { term , obtainedMarks } = req.body;
+  const { term, obtainedMarks } = req.body;
   // const term = 1;  // i can hardcore if i want later
 
   if (!obtainedMarks) {
@@ -217,21 +213,53 @@ const assignMarksToStudent = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Marksheet not found");
   }
 
-  const termObj = marksheet.terms.find(t => t.term === term);
-  console.log(termObj)
+  const termObj = marksheet.terms.find((t) => t.term === term);
+
   if (!termObj) {
     throw new ApiError(404, "Term not found");
   }
 
   // finding the subject where the teacherId matches
   const subjectObj = termObj.subjects.find(
-    s => String(s.teacher) === String(teacherId)
+    (s) => String(s.teacher) === String(teacherId)
   );
   if (!subjectObj) {
     throw new ApiError(403, "You are not allowed to update this subject");
   }
+
   subjectObj.obtainedMarks = obtainedMarks;
   subjectObj.isSubmitted = true;
+
+  // logic for percentage calculation
+
+  const eachPercentage = ((obtainedMarks / subjectObj.maxMarks) * 100).toFixed(
+    2
+  );
+  subjectObj.percentage = eachPercentage;
+
+  // total percentage logic
+  const allSubjects = termObj.subjects;
+  let totalObtainedNumbers = [];
+  let totalMarks = [];
+  allSubjects.forEach((e) => {
+    totalObtainedNumbers.push(e.obtainedMarks);
+  });
+  allSubjects.forEach((e) => {
+    totalMarks.push(e.maxMarks);
+  });
+
+  let totalObtained = 0;
+  for (let i = 0; i < totalObtainedNumbers.length; i++) {
+    totalObtained = totalObtained + totalObtainedNumbers[i];
+  }
+  let total = 0;
+  for (let i = 0; i < totalMarks.length; i++) {
+    total += totalMarks[i];
+  }
+
+  const totalPercentage = ((totalObtained / total) * 100).toFixed(2);
+
+  termObj.percentage = totalPercentage;
 
   await marksheet.save();
 
@@ -239,6 +267,5 @@ const assignMarksToStudent = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "Marks updated successfully"));
 });
-
 
 export { registerTeacher, loginTeacher, logOutTeacher, assignMarksToStudent };
