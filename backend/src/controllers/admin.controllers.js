@@ -1,6 +1,7 @@
 import { Admin } from "../models/admin.models.js";
 import { Marksheet } from "../models/marksheet.models.js";
 import { Student } from "../models/student.models.js";
+import { Teacher } from "../models/teacher.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
@@ -283,6 +284,49 @@ const updateStudent = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, student, "studnet updated successfully"));
 });
 
+// gotta more refine the classassigned field , like admin should have control to remove or add class to existing class !! also look for wheather i need to give access to other fields to admin,,
+const updateTeacher = asyncHandler( async(req,res) => {
+  const {fullName,classAssigned} = req.body
+  if (!(fullName , classAssigned)) throw new ApiError(400,"at least one field is required")
+  const teacherId = req.params.id
+  const teacher = await Teacher.findByIdAndUpdate(teacherId,
+    {
+      fullName: fullName,
+      classAssigned: classAssigned
+    }
+  )
+
+  if (!teacher) throw new ApiError(400,"error while updateing teacher")
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      {},
+      "successfully udpated teacher"
+    )
+  )
+})
+
+// theres gonna be alot of trouble if teacher is removed , cuz after teacher removale there should also remove all the respective teacher id's from all those marksheet , and antoehr teacher should be particularly assigned to that teacher!!!
+// const removeTeacher = asyncHandler(async(req,res) => {
+//   const teacherId = req.params.id
+//   if(!teacherId) throw new ApiError(400,"teacher doesn't exists")
+//   const teacher = Teacher.findByIdAndDelete(teacherId)
+//   if(!teacher) throw new ApiError(500,"internal server error , wasn't able to remove the teacher")
+
+//     return res
+//     .status(200)
+//     .json(
+//       new ApiResponse(
+//         200,
+//         {},
+//         "teacher removed successfully"
+//       )
+//     )
+// })
+
 export {
   registerAdmin,
   loginAdmin,
@@ -291,4 +335,5 @@ export {
   fetchAllStudents,
   removeStudent,
   updateStudent,
+  updateTeacher
 };

@@ -7,6 +7,7 @@ import {
   registerAdmin,
   removeStudent,
   updateStudent,
+  updateTeacher,
 } from "../controllers/admin.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 import { registerStudent } from "../controllers/student.controllers.js";
@@ -24,11 +25,13 @@ router.route("/changepassword").post(verifyJWT, changePassword);
 router
   .route("/createStudent")
   .post(verifyJWT, upload.single("profilePhoto"), registerStudent);
-router.route("/fetchAllStudents/:id").get(verifyJWT, fetchAllStudents);
+// router.route("/fetchAllStudents/:id").get(verifyJWT, fetchAllStudents);
+router.route("/fetchAllStudents/:id").get(fetchAllStudents);
 router.route("/removeStudent/:id").delete(verifyJWT, removeStudent);
 router.route("/updateStudent/:id").patch(verifyJWT,updateStudent)
 
 // teacher
 router.route("/createTeacher").post(verifyJWT,registerTeacher)
+router.route("/updateTeacher/:id").patch(verifyJWT,updateTeacher)
 
 export default router;
