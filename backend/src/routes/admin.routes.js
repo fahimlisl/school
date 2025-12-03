@@ -25,8 +25,7 @@ router.route("/changepassword").post(verifyJWT, changePassword);
 router
   .route("/createStudent")
   .post(verifyJWT, upload.single("profilePhoto"), registerStudent);
-// router.route("/fetchAllStudents/:id").get(verifyJWT, fetchAllStudents);
-router.route("/fetchAllStudents/:id").get(fetchAllStudents);
+router.route("/fetchAllStudents/:id").get(verifyJWT, fetchAllStudents);
 router.route("/removeStudent/:id").delete(verifyJWT, removeStudent);
 router.route("/updateStudent/:id").patch(verifyJWT,updateStudent)
 
