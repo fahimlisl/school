@@ -114,7 +114,22 @@ const dobPassword = formatDOBPassword(DOB)
     admissionDate:new Date(admissionDate),
     profilePhoto: uploadedFile.url || "",
     feeStructure: feeS._id,
-    feesPaid,
+    feesPaid: {
+    jan: false,
+    feb: false,
+    march: false,
+    april: false,
+    may: false,
+    jun: false,
+    july: false,
+    august: false,
+    september: false,
+    october: false,
+    november: false,
+    december: false,
+    admissionFee: feesPaid === true, 
+    adittionalFees: false,
+  },
   });
 
   if (!createdStudent) {
@@ -225,7 +240,8 @@ const loginStudent = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          foundStudnet: loggedInStudent,
+          // foundStudnet: loggedInStudent,
+          loginUser: loggedInStudent,
           accessToken,
           refreshToken,
         },

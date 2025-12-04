@@ -106,7 +106,7 @@ const loginTeacher = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        [loggingTeacher, accessToken, refreshToken],
+        {  loginUser: loggedInTeacher, accessToken, refreshToken},
         "teacher logged in successfully"
       )
     );
