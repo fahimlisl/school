@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in on app load
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
     
@@ -40,8 +39,7 @@ export const AuthProvider = ({ children }) => {
         default:
           throw new Error("Invalid role");
       }
-
-      const url = `http://localhost:3030/api/v1${endpoint}`;
+      const url = `${import.meta.env.VITE_BASE_URL}${endpoint}`;
       console.log(`🌐 Calling API: ${url}`);
 
       // Make API call
@@ -56,27 +54,17 @@ export const AuthProvider = ({ children }) => {
         }),
       });
 
-      console.log(`📊 Response Status: ${response.status} ${response.statusText}`);
       
-      // Get response as text first to check if it's JSON
+      // Get response as text first
       const responseText = await response.text();
-      console.log(`📦 Raw Response (first 200 chars):`, responseText.substring(0, 200));
+      console.log(`📦 Raw Response:`, responseText);
       
       let data;
       try {
-        // Try to parse as JSON
         data = JSON.parse(responseText);
       } catch (parseError) {
         console.error("❌ Response is not JSON:", responseText);
-        
-        // Check if it's HTML error page
-        if (responseText.includes("<!DOCTYPE") || responseText.includes("<html")) {
-          throw new Error(`Backend returned HTML instead of JSON. Check if endpoint ${url} exists.`);
-        } else if (responseText.includes("Cannot POST") || responseText.includes("404")) {
-          throw new Error(`Endpoint not found: ${url}. Check your backend routes.`);
-        } else {
-          throw new Error(`Invalid response from server: ${responseText.substring(0, 100)}`);
-        }
+        throw new Error(`Invalid JSON response from server`);
       }
 
       console.log("✅ Parsed JSON Response:", data);
@@ -85,9 +73,26 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.message || data.error || `Login failed with status ${response.status}`);
       }
 
-      // Extract data from your API response format
-      const { accessToken, loginUser } = data.data || {};
-      
+      // ✅ FIX: Handle different response formats for different roles
+      let loginUser, accessToken, refreshToken;
+
+      if (role === "teacher") {
+        // Teacher returns [user, accessToken, refreshToken] array
+        if (Array.isArray(data.data)) {
+          [loginUser, accessToken, refreshToken] = data.data;
+        } else {
+          // Fallback to new format if teacher controller was updated
+          loginUser = data.data?.loginUser || data.data?.foundStudnet;
+          accessToken = data.data?.accessToken;
+          refreshToken = data.data?.refreshToken;
+        }
+      } else {
+        // Student/Admin returns object with loginUser, accessToken, refreshToken
+        loginUser = data.data?.loginUser || data.data?.foundStudnet;
+        accessToken = data.data?.accessToken;
+        refreshToken = data.data?.refreshToken;
+      }
+
       if (!accessToken || !loginUser) {
         console.error("❌ Missing token or user in response:", data);
         throw new Error("Invalid response format from server");
@@ -97,13 +102,17 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         id: loginUser._id,
         email: loginUser.email,
-        username: loginUser.username,
-        name: loginUser.username,
+        username: loginUser.username || loginUser.fullName,
+        name: loginUser.username || loginUser.fullName,
         role: role,
         createdAt: loginUser.createdAt,
+        fullName: loginUser.fullName, // Add fullName for teacher
+        phoneNumber: loginUser.phoneNumber,
+        subject: loginUser.subject,
+        classAssigned: loginUser.classAssigned
       };
 
-      // store in localStorage
+      // Store in localStorage
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", accessToken);
 
@@ -124,15 +133,14 @@ export const AuthProvider = ({ children }) => {
       
       let errorMessage = error.message;
       
-
-      if (errorMessage.includes("user doesn't exist")) {
-        errorMessage = "User not found in database";
-      } else if (errorMessage.includes("correct password")) {
+      if (errorMessage.includes("user doesn't exist") || errorMessage.includes("invalid credentials")) {
+        errorMessage = "Invalid email or password";
+      } else if (errorMessage.includes("correct password") || errorMessage.includes("pasword is wrong")) {
         errorMessage = "Incorrect password";
       } else if (errorMessage.includes("Cannot POST") || errorMessage.includes("404")) {
-        errorMessage = `API endpoint not found. Check if backend is running and endpoint exists.`;
-      } else if (errorMessage.includes("HTML instead of JSON")) {
-        errorMessage = "Backend returned an error page. Check server logs.";
+        errorMessage = `Server error: API endpoint not found`;
+      } else if (errorMessage.includes("Failed to fetch")) {
+        errorMessage = "Cannot connect to server. Check if backend is running.";
       }
 
       return { 
@@ -145,10 +153,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // localstorgage clearing
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    
     
     setUser(null);
     setToken(null);

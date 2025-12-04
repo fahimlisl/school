@@ -8,12 +8,12 @@ export default function PublicNavbar() {
     <nav className="bg-white shadow-md w-full sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
 
-        {/* Logo */}
+
         <Link to="/" className="text-2xl font-bold text-blue-700">
           YourSchool
         </Link>
 
-        {/* Desktop Menu */}
+
         <div className="hidden md:flex items-center gap-8 font-medium">
           <NavLink to="/" className="hover:text-blue-600">Home</NavLink>
           <NavLink to="/about" className="hover:text-blue-600">About</NavLink>
@@ -23,14 +23,14 @@ export default function PublicNavbar() {
           <NavLink to="/contact" className="hover:text-blue-600">Contact</NavLink>
         </div>
 
-        {/* Desktop login buttons */}
+
         <div className="hidden md:flex gap-3">
           <Link to="/login" className="px-3 py-1 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white">Admin</Link>
-          <Link to="/student-login" className="px-3 py-1 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white">Student</Link>
-          <Link to="/teacher-login" className="px-3 py-1 border border-purple-600 rounded-lg hover:bg-purple-600 hover:text-white">Teacher</Link>
+          <Link to="/login" className="px-3 py-1 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white">Student</Link>
+          <Link to="/login" className="px-3 py-1 border border-purple-600 rounded-lg hover:bg-purple-600 hover:text-white">Teacher</Link>
         </div>
 
-        {/* Mobile Menu Button */}
+
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden text-gray-700 text-2xl"
@@ -39,7 +39,7 @@ export default function PublicNavbar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
+
       {open && (
         <div className="md:hidden bg-white shadow-inner px-5 py-4 space-y-4">
 

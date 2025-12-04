@@ -23,7 +23,7 @@ export default function PublicFooter() {
   ];
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 pt-12 pb-6 mt-16 border-t border-gray-700">
+    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 pt-12 pb-6 mt-1 border-t border-gray-700">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* main footer */}

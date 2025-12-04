@@ -27,6 +27,178 @@ const generateAccessAndRefreshToken = async function (userId) {
   return { accessToken, refreshToken };
 };
 
+// const registerStudent = asyncHandler(async (req, res) => {
+//   const {
+//     fullName,
+//     phoneNumber,
+//     password,
+//     email,
+//     gurdianName,
+//     currentClass,
+//     section,
+//     admissionDate,
+//     feesPaid,
+//     DOB
+//   } = req.body;
+
+//   if (!admissionDate) {
+//     throw new ApiError(400,"admission date required")
+//   }
+
+//   if (!DOB) {
+//     throw new ApiError(400,"date of birth of studnet is required")
+//   }
+
+//   if (
+//     [
+//       fullName,
+//       email,
+//       gurdianName,
+//       section,
+//       currentClass,
+//       phoneNumber,
+//     ].some((f) => !f && f !== 0)
+//   ) {
+//     throw new ApiError(401, "all fields are required");
+//   }
+
+//   const fstudent = await Student.findOne({
+//     $or: [{ email }, { phoneNumber }],
+//   });
+
+//   if (fstudent) {
+//     throw new ApiError(
+//       401,
+//       "studnet already exists , created by the same phonenumber and email"
+//     );
+//   }
+
+//   const profilePhotoPath = req.file?.path;
+
+//   if (!profilePhotoPath) {
+//     throw new ApiError(401, "profile Photo required to proccede");
+//   }
+
+//   const uploadedFile = await uploadOnCloudinary(profilePhotoPath);
+
+
+//   const feeS = await Fee.findOne({ classAssign: currentClass });
+
+//   if (!feeS) {
+//     throw new ApiError(
+//       500,
+//       "fee sturecutre for the speicified class wasn't able to found"
+//     );
+//   }
+
+//   // password ddmmyyyy format
+// const formatDOBPassword = (dateString) => {
+//   const date = new Date(dateString);
+//   const day = String(date.getDate()).padStart(2, '0');
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const year = date.getFullYear();
+//   return `${day}${month}${year}`;
+// };
+
+// const dobPassword = formatDOBPassword(DOB)
+
+//   const createdStudent = await Student.create({
+//     fullName,
+//     email,
+//     phoneNumber,
+//     currentClass,
+//     gurdianName,
+//     DOB:new Date(DOB),
+//     password:dobPassword,
+//     section,
+//     admissionDate:new Date(admissionDate),
+//     profilePhoto: uploadedFile.url || "",
+//     feeStructure: feeS._id,
+//     feesPaid: {
+//     jan: false,
+//     feb: false,
+//     march: false,
+//     april: false,
+//     may: false,
+//     jun: false,
+//     july: false,
+//     august: false,
+//     september: false,
+//     october: false,
+//     november: false,
+//     december: false,
+//     admissionFee: feesPaid === true, 
+//     adittionalFees: false,
+//   },
+//   });
+
+//   if (!createdStudent) {
+//     throw new ApiError(
+//       500,
+//       "internal server error , fialed to created studnet"
+//     );
+//   }
+//   //writing marlksheet logic here
+
+//   // const letsSee = await Promise.all(
+//   //   respectiveSub.map(sub => Teacher.findOne({ subject: sub }))
+//   // )
+
+//   // console.log(letsSee)
+
+//   // const teacherIds = letsSee.map(t => t._id)
+
+//   // console.log(teacherIds)
+
+
+//   const respectiveSub = subjectTemplate[currentClass];
+
+//   const assignedSubjects = await Promise.all(
+//     respectiveSub.map(async (sub) => {
+//       const teacher = await Teacher.findOne({
+//         subject: sub.toLowerCase(),
+//         classAssigned: {$in:[currentClass]}
+//       });
+
+//       return {
+//         subjectName: sub.toLowerCase(),
+//         maxMarks: 100,
+//         obtainedMarks: 0,
+//         teacher: teacher ? teacher._id : null,
+//         isSubmitted: false,
+//       };
+//     })
+//   );
+
+//   const termsArray = [1,2,3].map(term => ({
+//     term,
+//     subjects: assignedSubjects.map(s => ({
+//       ...s,
+//           obtainedMarks: 0,
+//     isSubmitted: false
+//     }))
+//   }))
+
+//   const wholeMarksheet = await Marksheet.create({
+//     student: createdStudent._id,
+//     terms:termsArray
+//   });
+
+//   await Student.findByIdAndUpdate(createdStudent._id, {
+//     $set: {
+//       marksheet: wholeMarksheet._id,
+//     },
+//   });
+
+//   const finalStudnet = await Student.findById(createdStudent._id)
+//     .populate("marksheet")
+//     .populate("feeStructure");
+
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, finalStudnet, "student created successfully"));
+// });
+
 const registerStudent = asyncHandler(async (req, res) => {
   const {
     fullName,
@@ -42,11 +214,11 @@ const registerStudent = asyncHandler(async (req, res) => {
   } = req.body;
 
   if (!admissionDate) {
-    throw new ApiError(400,"admission date required")
+    throw new ApiError(400, "admission date required");
   }
 
   if (!DOB) {
-    throw new ApiError(400,"date of birth of studnet is required")
+    throw new ApiError(400, "date of birth of student is required");
   }
 
   if (
@@ -69,17 +241,21 @@ const registerStudent = asyncHandler(async (req, res) => {
   if (fstudent) {
     throw new ApiError(
       401,
-      "studnet already exists , created by the same phonenumber and email"
+      "student already exists with same phone number or email"
     );
   }
 
-  const profilePhotoPath = req.file?.path;
 
-  if (!profilePhotoPath) {
-    throw new ApiError(401, "profile Photo required to proccede");
+  if (!req.file) {
+    throw new ApiError(401, "profile photo required to proceed");
   }
 
-  const uploadedFile = await uploadOnCloudinary(profilePhotoPath);
+  // Upload using memory storage buffer
+  const uploadedFile = await uploadOnCloudinary(req.file.buffer);
+
+  if (!uploadedFile || !uploadedFile.url) {
+    throw new ApiError(500, "failed to upload image to cloudinary");
+  }
 
 
   const feeS = await Fee.findOne({ classAssign: currentClass });
@@ -87,20 +263,20 @@ const registerStudent = asyncHandler(async (req, res) => {
   if (!feeS) {
     throw new ApiError(
       500,
-      "fee sturecutre for the speicified class wasn't able to found"
+      "fee structure for the specified class not found"
     );
   }
 
-  // password ddmmyyyy format
-const formatDOBPassword = (dateString) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}${month}${year}`;
-};
+  // Generate password ddmmyyyy
+  const formatDOBPassword = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}${month}${year}`;
+  };
 
-const dobPassword = formatDOBPassword(DOB)
+  const dobPassword = formatDOBPassword(DOB);
 
   const createdStudent = await Student.create({
     fullName,
@@ -108,56 +284,41 @@ const dobPassword = formatDOBPassword(DOB)
     phoneNumber,
     currentClass,
     gurdianName,
-    DOB:new Date(DOB),
-    password:dobPassword,
+    DOB: new Date(DOB),
+    password: dobPassword,
     section,
-    admissionDate:new Date(admissionDate),
-    profilePhoto: uploadedFile.url || "",
+    admissionDate: new Date(admissionDate),
+    profilePhoto: uploadedFile.url,
     feeStructure: feeS._id,
     feesPaid: {
-    jan: false,
-    feb: false,
-    march: false,
-    april: false,
-    may: false,
-    jun: false,
-    july: false,
-    august: false,
-    september: false,
-    october: false,
-    november: false,
-    december: false,
-    admissionFee: feesPaid === true, 
-    adittionalFees: false,
-  },
+      jan: false,
+      feb: false,
+      march: false,
+      april: false,
+      may: false,
+      jun: false,
+      july: false,
+      august: false,
+      september: false,
+      october: false,
+      november: false,
+      december: false,
+      admissionFee: feesPaid === true,
+      adittionalFees: false,
+    },
   });
 
   if (!createdStudent) {
-    throw new ApiError(
-      500,
-      "internal server error , fialed to created studnet"
-    );
+    throw new ApiError(500, "failed to create student");
   }
-  //writing marlksheet logic here
 
-  // const letsSee = await Promise.all(
-  //   respectiveSub.map(sub => Teacher.findOne({ subject: sub }))
-  // )
-
-  // console.log(letsSee)
-
-  // const teacherIds = letsSee.map(t => t._id)
-
-  // console.log(teacherIds)
-
-
-  const respectiveSub = subjectTemplate[currentClass];
+  const respectiveSub = subjectTemplate[currentClass] || [];
 
   const assignedSubjects = await Promise.all(
     respectiveSub.map(async (sub) => {
       const teacher = await Teacher.findOne({
         subject: sub.toLowerCase(),
-        classAssigned: {$in:[currentClass]}
+        classAssigned: { $in: [currentClass] },
       });
 
       return {
@@ -170,18 +331,18 @@ const dobPassword = formatDOBPassword(DOB)
     })
   );
 
-  const termsArray = [1,2,3].map(term => ({
+  const termsArray = [1, 2, 3].map((term) => ({
     term,
-    subjects: assignedSubjects.map(s => ({
+    subjects: assignedSubjects.map((s) => ({
       ...s,
-          obtainedMarks: 0,
-    isSubmitted: false
-    }))
-  }))
+      obtainedMarks: 0,
+      isSubmitted: false,
+    })),
+  }));
 
   const wholeMarksheet = await Marksheet.create({
     student: createdStudent._id,
-    terms:termsArray
+    terms: termsArray,
   });
 
   await Student.findByIdAndUpdate(createdStudent._id, {

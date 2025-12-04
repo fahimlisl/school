@@ -21,7 +21,7 @@ import NoticeBoard from "./pages/website/NoticeBoard.jsx";
 
 // Admin sub-pages
 import StudentList from "./pages/admin/Students/StudentList.jsx";
-// import AddStudent from "./pages/admin/Students/AddStudent.jsx";
+import AddStudent from "./pages/admin/Students/AddStudent.jsx";
 // import TeacherList from "./pages/admin/Teachers/TeacherList.jsx";
 
 export default function Router() {
@@ -50,7 +50,7 @@ export default function Router() {
         {/* Admin sub-routes */}
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="students" element={<StudentList />} />
-        {/* <Route path="students/add" element={<AddStudent />} /> */}
+        <Route path="add-student" element={<AddStudent />} />
         {/* <Route path="teachers" element={<TeacherList />} /> */}
         <Route path="*" element={<AdminDashboard />} />
       </Route>
