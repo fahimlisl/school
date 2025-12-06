@@ -33,6 +33,6 @@ router.route("/updateStudent/:id").patch(verifyJWT,updateStudent)
 // teacher
 router.route("/createTeacher").post(verifyJWT,registerTeacher)
 router.route("/updateTeacher/:id").patch(verifyJWT,updateTeacher)
-router.route("updateStudentFee/:id").patch(verifyJWT,updateFeeStatus)
+router.route("/updateStudentFee/:id").patch(verifyJWT,updateFeeStatus)
 
 export default router;
