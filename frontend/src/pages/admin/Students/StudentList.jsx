@@ -169,6 +169,37 @@ const [selectedFeeStudent, setSelectedFeeStudent] = useState(null);
   setShowFeeModal(true);
 };
 
+const handleToggleFee = async (month) => {
+  try {
+    const updatedPaidStatus = !selectedFeeStudent.feesPaid[month];
+
+    const response = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/admin/updateStudentFee/${selectedFeeStudent._id}`,
+      {
+        month,
+        paid: updatedPaidStatus,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(response.data)
+    console.log(response)
+    // update UI instantly
+    setSelectedFeeStudent((prev) => ({
+      ...prev,
+      feesPaid: {
+        ...prev.feesPaid,
+        [month]: updatedPaidStatus,
+      },
+    }));
+
+  } catch (error) {
+    console.error("Error updating fee status:", error);
+  }
+};
 
   const handelViewFeeCollection = async() => {
     try {
