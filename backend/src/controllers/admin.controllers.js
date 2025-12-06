@@ -347,6 +347,23 @@ const updateFeeStatus = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, student, "Fee status updated"));
 });
 
+const fetchAllTeacher = asyncHandler(async(req,res) => {
+  const teacher = await Teacher.find({})
+  // futher can i apply piepline for getting fileter via subject and class things 
+  if (!teacher) {
+    throw new ApiError(400,"this subject teacher doesn't exist")
+  }
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      teacher,
+      "successfully fetched all teachers"
+    )
+  )
+})
 
 
 export {
@@ -358,5 +375,6 @@ export {
   removeStudent,
   updateStudent,
   updateTeacher,
-  updateFeeStatus
+  updateFeeStatus,
+  fetchAllTeacher
 };

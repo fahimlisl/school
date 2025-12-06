@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   changePassword,
   fetchAllStudents,
+  fetchAllTeacher,
   loginAdmin,
   logOutAdmin,
   registerAdmin,
@@ -29,10 +30,12 @@ router
 router.route("/fetchAllStudents/:id").get(verifyJWT, fetchAllStudents);
 router.route("/removeStudent/:id").delete(verifyJWT, removeStudent);
 router.route("/updateStudent/:id").patch(verifyJWT,updateStudent)
+router.route("/updateStudentFee/:id").patch(verifyJWT,updateFeeStatus)
 
 // teacher
 router.route("/createTeacher").post(verifyJWT,registerTeacher)
 router.route("/updateTeacher/:id").patch(verifyJWT,updateTeacher)
-router.route("/updateStudentFee/:id").patch(verifyJWT,updateFeeStatus)
+// router.route("/fetchAllTeachers/:subject").get(verifyJWT,fetchAllStudents)
+router.route("/fetchAllTeachers").get(verifyJWT,fetchAllTeacher)
 
 export default router;
