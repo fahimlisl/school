@@ -327,6 +327,28 @@ const updateTeacher = asyncHandler( async(req,res) => {
 //     )
 // })
 
+
+const updateFeeStatus = asyncHandler(async (req, res) => {
+  const { month, paid } = req.body;
+  const studentId = req.params.id;
+
+  if (!month) {
+    throw new ApiError(400, "Month is required");
+  }
+
+  const student = await Student.findById(studentId);
+  if (!student) throw new ApiError(404, "Student not found");
+
+  student.feesPaid[month] = paid;
+  await student.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Fee status updated"));
+});
+
+
+
 export {
   registerAdmin,
   loginAdmin,
@@ -335,5 +357,6 @@ export {
   fetchAllStudents,
   removeStudent,
   updateStudent,
-  updateTeacher
+  updateTeacher,
+  updateFeeStatus
 };
