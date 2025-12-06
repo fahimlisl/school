@@ -36,7 +36,9 @@ cloudinary.config({
 //     }
 // }
 
-export const uploadOnCloudinary = async (fileBuffer) => {
+
+
+const uploadOnCloudinary = async (fileBuffer) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream(
       { folder: "students" },
