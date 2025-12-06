@@ -12,29 +12,41 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
-const uploadOnCloudinary = async(localFilePath) => {
-    try {
-        if (!localFilePath) {
-            throw new ApiError(401,"no there no localFilePath found in line 13 of cloudinary.js")
-        }
-        const uploadedOnCloud = await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
-        })
+// const uploadOnCloudinary = async(localFilePath) => {
+//     try {
+//         if (!localFilePath) {
+//             throw new ApiError(401,"no there no localFilePath found in line 13 of cloudinary.js")
+//         }
+//         const uploadedOnCloud = await cloudinary.uploader.upload(localFilePath,{
+//             resource_type:"auto"
+//         })
 
-        console.log(`file has been uploaded in cloudianry ${uploadedOnCloud.url}`)
+//         console.log(`file has been uploaded in cloudianry ${uploadedOnCloud.url}`)
 
-        if (fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath)
-        }
-        return uploadedOnCloud
+//         if (fs.existsSync(localFilePath)) {
+//             fs.unlinkSync(localFilePath)
+//         }
+//         return uploadedOnCloud
         
-    } catch (error) {
-        if (localFilePath && fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath)
-        }
-        console.log(`got error while uploading file to cloudinary ${error}`)
-    }
-}
+//     } catch (error) {
+//         if (localFilePath && fs.existsSync(localFilePath)) {
+//             fs.unlinkSync(localFilePath)
+//         }
+//         console.log(`got error while uploading file to cloudinary ${error}`)
+//     }
+// }
+
+export const uploadOnCloudinary = async (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: "students" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    ).end(fileBuffer);
+  });
+};
 
 
 

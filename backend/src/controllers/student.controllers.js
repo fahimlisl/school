@@ -73,13 +73,20 @@ const registerStudent = asyncHandler(async (req, res) => {
     );
   }
 
-  const profilePhotoPath = req.file?.path;
+  // const profilePhotoPath = req.file?.path;
 
-  if (!profilePhotoPath) {
-    throw new ApiError(401, "profile Photo required to proccede");
-  }
+  // if (!profilePhotoPath) {
+  //   throw new ApiError(401, "profile Photo required to proccede");
+  // }
 
-  const uploadedFile = await uploadOnCloudinary(profilePhotoPath);
+  // const uploadedFile = await uploadOnCloudinary(profilePhotoPath);
+// console.log("FILE:", req.file); // gotta uncommit if wanna check the error
+
+  if (!req.file) {
+  throw new ApiError(400, "Profile photo required");
+}
+
+const uploadedFile = await uploadOnCloudinary(req.file.buffer);
 
 
   const feeS = await Fee.findOne({ classAssign: currentClass });
