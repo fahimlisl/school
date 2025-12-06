@@ -55,6 +55,13 @@ export default function StudentList() {
   });
   const [editStudentId, setEditStudentId] = useState(null);
 
+  // for fee section
+  // const [s , setShowEditModal] = useState(false)
+  const [studentIdFee,setStudentIdFee] = useState(null)
+  const [showFeeModal, setShowFeeModal] = useState(false);
+const [selectedFeeStudent, setSelectedFeeStudent] = useState(null);
+
+
   const classes = Array.from({ length: 12 }, (_, i) => i + 1);
   const sections = ["A", "B", "C", "D"];
 
@@ -156,9 +163,23 @@ export default function StudentList() {
     setShowEditModal(true);
   };
 
+
+  const openFeeModal = (student) => {
+  setSelectedFeeStudent(student);
+  setShowFeeModal(true);
+};
+
+
+  const handelViewFeeCollection = async() => {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+
   const handleUpdateStudent = async () => {
     try {
-      console.log("getting studnet id ");
       await axios.patch(
         `${import.meta.env.VITE_BASE_URL}/admin/updateStudent/${editStudentId}`,
         editData,
@@ -555,11 +576,18 @@ export default function StudentList() {
                           <div className="text-xs text-gray-500">
                             {/* Total: ${student.feeStructure.totalFees || "N/A"} */}
                             {/* Total: ${student.feeStructure.monthlyFees || "N/A"} */}
-                            {
+                            {/* {
                               student.feeStructure.monthlyFees.jan
-                            }
-                            {console.log(student.feeStructure.monthlyFees)}
-                            {console.log(student.feeStructure)}
+                            } */}
+                            {/* {console.log(student.feeStructure.monthlyFees)} */}
+                            {/* {console.log(student.feeStructure)} */}
+                            <button
+                          onClick={() => openFeeModal(student)}
+                          className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"
+                          title="View Details"
+                        >
+                          Fee Collection
+                        </button>
                           </div>
                         )}
                       </div>
@@ -908,6 +936,105 @@ export default function StudentList() {
           </div>
         </div>
       )}
+
+      {showFeeModal && selectedFeeStudent && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-lg">
+
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        Fee Collection – {selectedFeeStudent.fullName}
+      </h2>
+
+      <p className="text-gray-600 mb-4">
+        Class {selectedFeeStudent.currentClass} · Section {selectedFeeStudent.section}
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        {Object.entries(selectedFeeStudent.feeStructure.monthlyFees).map(([month, amount]) => {
+          const paid = selectedFeeStudent.feesPaid[month];
+
+          return (
+            <div 
+              key={month}
+              className="p-4 border rounded-xl flex items-center justify-between bg-gray-50"
+            >
+              <div>
+                <p className="text-lg font-semibold capitalize">{month}</p>
+                <p className="text-gray-600 text-sm">₹ {amount}</p>
+              </div>
+
+              <button
+                onClick={() => handleToggleFee(month)}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  paid
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {paid ? "Paid" : "Pending"}
+              </button>
+            </div>
+          );
+        })}
+
+        {/* Admission Fee */}
+        <div className="p-4 border rounded-xl flex items-center justify-between bg-gray-50">
+          <div>
+            <p className="text-lg font-semibold">Admission Fee</p>
+            <p className="text-gray-600 text-sm">
+              ₹ {selectedFeeStudent.feeStructure.admissionFee}
+            </p>
+          </div>
+
+          <button
+            onClick={() => handleToggleFee("admissionFee")}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              selectedFeeStudent.feesPaid.admissionFee
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {selectedFeeStudent.feesPaid.admissionFee ? "Paid" : "Pending"}
+          </button>
+        </div>
+
+        {/* Additional Fee */}
+        <div className="p-4 border rounded-xl flex items-center justify-between bg-gray-50">
+          <div>
+            <p className="text-lg font-semibold">Additional Fee</p>
+            <p className="text-gray-600 text-sm">
+              ₹ {selectedFeeStudent.feeStructure.adittionalFees}
+            </p>
+          </div>
+
+          <button
+            onClick={() => handleToggleFee("adittionalFees")}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              selectedFeeStudent.feesPaid.adittionalFees
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {selectedFeeStudent.feesPaid.adittionalFees ? "Paid" : "Pending"}
+          </button>
+        </div>
+
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={() => setShowFeeModal(false)}
+          className="px-6 py-3 bg-gray-200 rounded-xl"
+        >
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
