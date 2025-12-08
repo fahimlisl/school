@@ -36,6 +36,9 @@ const teacherSchema = new mongoose.Schema(
         required:true
       }
     ],
+    // assigneedStudentsClass:[
+
+    // ]
   },
   { timestamps: true }
 );

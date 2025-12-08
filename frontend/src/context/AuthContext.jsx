@@ -100,7 +100,8 @@ export const AuthProvider = ({ children }) => {
 
       // Create user object
       const userData = {
-        id: loginUser._id,
+        // id: loginUser._id,
+        _id: loginUser._id,
         email: loginUser.email,
         username: loginUser.username || loginUser.fullName,
         name: loginUser.username || loginUser.fullName,
