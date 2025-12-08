@@ -8,7 +8,7 @@ import AdminLayout from "./components/layout/AdminLayout.jsx";
 
 // pages
 import AdminDashboard from "./pages/admin/Dashboard.jsx";
-import StudentDashboard from "./pages/student/Dashboard.jsx";
+// import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 import TeacherDashboard from "./pages/teacher/Dashboard.jsx";
 
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
@@ -23,6 +23,8 @@ import NoticeBoard from "./pages/website/NoticeBoard.jsx";
 import StudentList from "./pages/admin/Students/StudentList.jsx";
 import AddStudent from "./pages/admin/Students/AddStudent.jsx";
 import TeacherList from "./pages/admin/Teachers/TeacherList.jsx";
+// import StudentDashboard from "./pages/student/StudentDashboard.jsx";
+import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 
 export default function Router() {
   return (
@@ -60,24 +62,44 @@ export default function Router() {
       </Route>
 
       {/* STUDENT ROUTES */}
-      <Route
+      {/* <Route
         path="/student/*"
         element={
           <ProtectedRoute role="student">
             <StudentDashboard />
           </ProtectedRoute>
         }
-      />
+      /> */}
+
+      <Route
+  path="/student/dashboard"
+  element={
+     <ProtectedRoute role="student">
+            <StudentDashboard />
+          </ProtectedRoute>
+  }
+/>
+
+
+<Route
+  path="/teacher/dashboard"
+  element={
+    <ProtectedRoute role="teacher">
+      <TeacherDashboard />
+    </ProtectedRoute>
+  }
+/>
+
 
       {/* TEACHER ROUTES */}
-      <Route
+      {/* <Route
         path="/teacher/*"
         element={
           <ProtectedRoute role="teacher">
             <TeacherDashboard />
           </ProtectedRoute>
         }
-      />
+      /> */}
 
       {/* 404 FALLBACK */}
       <Route path="*" element={<Navigate to="/" />} />

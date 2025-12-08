@@ -268,4 +268,106 @@ const assignMarksToStudent = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Marks updated successfully"));
 });
 
-export { registerTeacher, loginTeacher, logOutTeacher, assignMarksToStudent };
+// const fetchAssisgendStudnets = asyncHandler( async(req,res) => {
+//   const teacherId = req.user._id
+//   const teacher = await Teacher.findById(teacherId)
+//   if (!teacher) {
+//     throw new ApiError(400,"unauthorized access")
+//   }
+
+//   const classArr = teacher.classAssigned
+
+//   // const student = await Student.find(classArr.forEach((e) => e)).populate("marksheet")
+//   // console.log(classArr.forEach((e) => e )) // returns undefiend
+//     const students = await Student.find({
+//     currentClass: { $in: teacher.classAssigned }
+//   })
+//   .select("fullName currentClass section profilePhoto marksheet")
+//   .populate({
+//     path: "marksheet",
+//     populate: {
+//       path: "terms.subjects.teacher",
+//       select: "fullName subject"
+//     }
+//   });
+
+
+//   const filteredTerms = marksheet.terms.map(term => ({
+//   term: term.term,
+//   subjects: term.subjects.filter(sub => String(sub.teacher) === String(teacherId))
+// }));
+//   return res
+//   .status(200)
+//   .json(
+//     new ApiResponse(
+//       200,
+//       // students,
+//       {marksheet:filteredTerms},
+//       "fetched marksheets"
+//     )
+//   )
+// })
+
+const fetchAssignedStudents = asyncHandler(async (req, res) => {
+  const teacherId = req.user._id;
+
+  const teacher = await Teacher.findById(teacherId);
+  if (!teacher) {
+    throw new ApiError(400, "Unauthorized access");
+  }
+
+  const classesAssigned = teacher.classAssigned; 
+
+
+  const students = await Student.find({
+    currentClass: { $in: classesAssigned }
+  })
+    .select("fullName currentClass section profilePhoto marksheet")
+    .populate({
+      path: "marksheet",
+      populate: {
+        path: "terms.subjects.teacher",
+        select: "fullName subject"
+      }
+    });
+
+  if (!students || students.length === 0) {
+    return res.status(200).json(
+      new ApiResponse(200, [], "No assigned students found")
+    );
+  }
+
+  const result = students.map(student => {
+    const ms = student.marksheet;
+
+    if (!ms || !ms.terms) {
+      return {
+        ...student.toObject(),
+        marksheet: null
+      };
+    }
+
+    const filteredTerms = ms.terms.map(term => ({
+      term: term.term,
+      subjects: term.subjects.filter(
+        sub => String(sub.teacher?._id) === String(teacherId)
+      )
+    }));
+
+    return {
+      ...student.toObject(),
+      marksheet: {
+        _id: ms._id,
+        terms: filteredTerms,
+      }
+    };
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, result, "Assigned students fetched successfully")
+  );
+});
+
+export { registerTeacher, loginTeacher, logOutTeacher, assignMarksToStudent,fetchAssignedStudents };
+
+
