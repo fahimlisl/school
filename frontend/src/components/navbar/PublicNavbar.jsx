@@ -109,13 +109,13 @@ export default function PublicNavbar() {
           </NavLink>
 
           <div className="pt-3 flex flex-col gap-2">
-            <Link to="/admin-login" className="border px-3 py-2 rounded">
+            <Link to="/login" className="border px-3 py-2 rounded">
               Admin Login
             </Link>
-            <Link to="/student-login" className="border px-3 py-2 rounded">
+            <Link to="/login" className="border px-3 py-2 rounded">
               Student Login
             </Link>
-            <Link to="/teacher-login" className="border px-3 py-2 rounded">
+            <Link to="/login" className="border px-3 py-2 rounded">
               Teacher Login
             </Link>
           </div>

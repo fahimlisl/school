@@ -107,7 +107,7 @@ export default function OnlineRegistration() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* TEXT INPUTS */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <input
               type="text"
@@ -192,9 +192,9 @@ export default function OnlineRegistration() {
             required
           ></textarea>
 
-          {/* FILE UPLOADS */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Passport Photo */}
+
             <div>
               <label className="font-semibold mb-2 block">Passport Photo</label>
               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 p-4 rounded-lg cursor-pointer hover:bg-gray-50">
@@ -217,7 +217,7 @@ export default function OnlineRegistration() {
               )}
             </div>
 
-            {/* Marksheet Photo */}
+
             <div>
               <label className="font-semibold mb-2 block">Marksheets</label>
               <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 p-4 rounded-lg cursor-pointer hover:bg-gray-50">
@@ -241,7 +241,7 @@ export default function OnlineRegistration() {
             </div>
           </div>
 
-          {/* Submit Button */}
+
           <button
             type="submit"
             disabled={loading}
