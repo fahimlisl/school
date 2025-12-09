@@ -88,7 +88,23 @@ const studentRegistration = asyncHandler(async (req, res) => {
 });
 
 
-export { studentRegistration };
+const fetchOnlineStudent = asyncHandler( async(req,res) => {
+  const online = await OnlineStudent.find({})
+  if(!online) throw new ApiError(400,"no online studnet found")
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      online,
+      "online student fetched sucessfully"
+    )
+  )
+})
+
+
+export { studentRegistration , fetchOnlineStudent};
 // get user details from frontend
 // validation - not empty not repetitive
 // checke if user already exist : username, email
