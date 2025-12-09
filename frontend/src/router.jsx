@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/website/Home.jsx";
-import Login from "./pages/auth/Login.jsx"; 
+import Login from "./pages/auth/Login.jsx";
 
 // layouts
 import AdminLayout from "./components/layout/AdminLayout.jsx";
@@ -25,6 +25,9 @@ import AddStudent from "./pages/admin/Students/AddStudent.jsx";
 import TeacherList from "./pages/admin/Teachers/TeacherList.jsx";
 // import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
+import OnlineRegistration from "../src/pages/website/OnlineRegistration.jsx"
+import FetchList from "./pages/admin/onlineStudent/FetchList.jsx"
+
 
 export default function Router() {
   return (
@@ -36,7 +39,7 @@ export default function Router() {
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/notice" element={<NoticeBoard />} />
-      
+
       {/* SINGLE LOGIN PAGE FOR EVERYONE */}
       <Route path="/login" element={<Login />} />
 
@@ -56,50 +59,29 @@ export default function Router() {
         {/* <Route path="teachers" element={<TeacherList />} /> */}
         <Route path="*" element={<AdminDashboard />} />
         // wherever your routes are
-{/* <Route path="/admin/teachers" element={<TeacherList />} /> */}
-<Route path="teachers" element={<TeacherList />} />
-
+        {/* <Route path="/admin/teachers" element={<TeacherList />} /> */}
+        <Route path="teachers" element={<TeacherList />} />
+        <Route path="online-students" element={<FetchList />} />
       </Route>
 
-      {/* STUDENT ROUTES */}
-      {/* <Route
-        path="/student/*"
+        <Route path="online-registration" element={<OnlineRegistration />} />
+      <Route
+        path="/student/dashboard"
         element={
           <ProtectedRoute role="student">
             <StudentDashboard />
           </ProtectedRoute>
         }
-      /> */}
+      />
 
       <Route
-  path="/student/dashboard"
-  element={
-     <ProtectedRoute role="student">
-            <StudentDashboard />
-          </ProtectedRoute>
-  }
-/>
-
-
-<Route
-  path="/teacher/dashboard"
-  element={
-    <ProtectedRoute role="teacher">
-      <TeacherDashboard />
-    </ProtectedRoute>
-  }
-/>
-
-
-      {/* TEACHER ROUTES */}
-      {/* <Route
-        path="/teacher/*"
+        path="/teacher/dashboard"
         element={
           <ProtectedRoute role="teacher">
             <TeacherDashboard />
           </ProtectedRoute>
         }
-      /> */}
+      />
 
       {/* 404 FALLBACK */}
       <Route path="*" element={<Navigate to="/" />} />

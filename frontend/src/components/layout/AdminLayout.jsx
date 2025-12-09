@@ -37,10 +37,10 @@ export default function AdminLayout() {
     }
   };
 
-  // Check if current page is Students page
+
   const isStudentsPage = location.pathname.includes('/admin/students');
 
-  // Main navigation items
+
   const navItems = [
     { 
       icon: <Home size={22} />, 
@@ -56,59 +56,66 @@ export default function AdminLayout() {
       subItems: ["All Students", "Add New", "Attendance", "Reports"]
     },
     { 
+      icon: <Users size={22} />, 
+      label: "Online Registration", 
+      path: "/admin/online-students",
+      // count: 1254,
+      subItems: ["All Students", "Add New", "Attendance", "Reports"]
+    },
+    { 
       icon: <UserCheck size={22} />, 
       label: "Teachers", 
       path: "/admin/teachers",
       count: 48
     },
-    { 
-      icon: <BookOpen size={22} />, 
-      label: "Courses", 
-      path: "#",
-      badge: "Updated"
-    },
-    { 
-      icon: <CreditCard size={22} />, 
-      label: "Finance", 
-      path: "#",
-      subItems: ["Fees", "Payments", "Reports", "Invoices"]
-    },
-    { 
-      icon: <Calendar size={22} />, 
-      label: "Attendance", 
-      path: "#" 
-    },
-    { 
-      icon: <BarChart3 size={22} />, 
-      label: "Analytics", 
-      path: "#" 
-    },
-    { 
-      icon: <FileText size={22} />, 
-      label: "Reports", 
-      path: "#" 
-    },
+    // { 
+    //   icon: <BookOpen size={22} />, 
+    //   label: "Courses", 
+    //   path: "#",
+    //   badge: "Updated"
+    // },
+    // { 
+    //   icon: <CreditCard size={22} />, 
+    //   label: "Finance", 
+    //   path: "#",
+    //   subItems: ["Fees", "Payments", "Reports", "Invoices"]
+    // },
+    // { 
+    //   icon: <Calendar size={22} />, 
+    //   label: "Attendance", 
+    //   path: "#" 
+    // },
+    // { 
+    //   icon: <BarChart3 size={22} />, 
+    //   label: "Analytics", 
+    //   path: "#" 
+    // },
+    // { 
+    //   icon: <FileText size={22} />, 
+    //   label: "Reports", 
+    //   path: "#" 
+    // },
     { 
       icon: <Award size={22} />, 
       label: "Exams", 
       path: "#" 
     },
-    { 
-      icon: <Settings size={22} />, 
-      label: "Settings", 
-      path: "#" 
-    },
+    // { 
+    //   icon: <Settings size={22} />, 
+    //   label: "Settings", 
+    //   path: "#" 
+    // },
   ];
 
-  // Quick actions - Updated to include Add Student
+
   const quickActions = [
     { icon: <Plus className="w-5 h-5" />, label: "Add Student", color: "bg-blue-500", path: "/admin/add-student" },
-    { icon: "👨‍🏫", label: "Add Teacher", color: "bg-green-500" },
-    { icon: "📊", label: "Generate Report", color: "bg-purple-500" },
+    { icon: "👨‍🏫", label: "Add Teacher", color: "bg-green-500" , path:"/admin/teachers" },
+    // { icon: "📊", label: "Generate Report", color: "bg-purple-500" },
     { icon: "📅", label: "Schedule Event", color: "bg-orange-500" },
   ];
 
-  // Sample notifications
+
   const notifications = [
     { id: 1, title: "New Student Registration", time: "5 min ago", unread: true },
     { id: 2, title: "Fee Payment Due", time: "1 hour ago", unread: true },
@@ -123,7 +130,7 @@ export default function AdminLayout() {
         <div className="px-4 h-full">
           <div className="flex items-center justify-between h-full">
             
-            {/* Left: Logo & Toggle */}
+
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -132,7 +139,7 @@ export default function AdminLayout() {
                 {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
 
-              {/* Logo */}
+
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                   <School className="w-6 h-6 text-white" />
@@ -144,7 +151,7 @@ export default function AdminLayout() {
               </div>
             </div>
 
-            {/* Center: Search Bar */}
+
             <div className="flex-1 max-w-2xl mx-4 hidden md:block">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -158,7 +165,7 @@ export default function AdminLayout() {
               </div>
             </div>
 
-            {/* Right: User Actions */}
+
             <div className="flex items-center space-x-3">
               {/* Add Student Button (Visible when on Students page) */}
               {isStudentsPage && (
@@ -171,7 +178,7 @@ export default function AdminLayout() {
                 </NavLink>
               )}
 
-              {/* Search Button (Mobile) */}
+
               <button 
                 onClick={() => setSearchOpen(!searchOpen)}
                 className="md:hidden p-2 rounded-lg hover:bg-gray-100"
@@ -179,7 +186,7 @@ export default function AdminLayout() {
                 <Search size={22} />
               </button>
 
-              {/* Notifications */}
+
               <div className="relative">
                 <button 
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -189,7 +196,7 @@ export default function AdminLayout() {
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
                 
-                {/* Notifications Dropdown */}
+
                 {notificationsOpen && (
                   <>
                     <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
@@ -231,7 +238,7 @@ export default function AdminLayout() {
                 )}
               </div>
 
-              {/* User Profile */}
+
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -252,7 +259,7 @@ export default function AdminLayout() {
                   <ChevronDown size={18} className="hidden lg:block text-gray-400" />
                 </button>
 
-                {/* User Dropdown */}
+
                 {userDropdownOpen && (
                   <>
                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
@@ -277,7 +284,7 @@ export default function AdminLayout() {
                         </div>
                       </div>
 
-                      {/* Menu Items */}
+
                       <div className="p-2">
                         <button className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg flex items-center">
                           <UserCheck size={18} className="mr-3" />
@@ -293,7 +300,7 @@ export default function AdminLayout() {
                         </button>
                       </div>
 
-                      {/* Logout */}
+
                       <div className="p-3 border-t">
                         <button
                           onClick={handleLogout}
@@ -316,7 +323,7 @@ export default function AdminLayout() {
         </div>
       </nav>
 
-      {/* Mobile Search Overlay */}
+
       {searchOpen && (
         <div className="fixed inset-0 bg-white z-50 md:hidden">
           <div className="p-4 border-b">
@@ -337,7 +344,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* Sidebar */}
+
       <aside className={`
         fixed top-16 left-0 bottom-0 w-64 bg-white/95 backdrop-blur-xl border-r border-gray-200/50 
         transform transition-all duration-300 ease-in-out z-40 shadow-xl
@@ -345,7 +352,7 @@ export default function AdminLayout() {
         lg:translate-x-0 lg:static lg:top-0 lg:shadow-none
       `}>
         <div className="h-full flex flex-col">
-          {/* Quick Actions - Updated with Add Student */}
+
           <div className="p-6 border-b">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
               Quick Actions
@@ -390,7 +397,7 @@ export default function AdminLayout() {
             </div>
           </div>
 
-          {/* Main Navigation */}
+
           <div className="flex-1 overflow-y-auto p-4">
             <nav className="space-y-1">
               {navItems.map((item) => (
@@ -414,7 +421,7 @@ export default function AdminLayout() {
                       <span className="font-medium">{item.label}</span>
                     </div>
                     
-                    {/* Badges & Counts */}
+
                     {item.badge && (
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         item.path === "/admin/dashboard" 
@@ -434,13 +441,13 @@ export default function AdminLayout() {
                       </span>
                     )}
                     
-                    {/* Active Indicator */}
+
                     {item.path === "/admin/dashboard" && (
                       <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-full"></div>
                     )}
                   </NavLink>
                   
-                  {/* Add New Student Button inside Students menu */}
+
                   {item.label === "Students" && (
                     <div className="ml-4 mt-1 pl-8">
                       <NavLink
@@ -456,7 +463,7 @@ export default function AdminLayout() {
               ))}
             </nav>
 
-            {/* System Status */}
+
             <div className="mt-8 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-700">System Status</span>
@@ -471,7 +478,7 @@ export default function AdminLayout() {
             </div>
           </div>
 
-          {/* Footer */}
+
           <div className="p-4 border-t">
             <div className="flex items-center space-x-3 p-3 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
@@ -479,20 +486,20 @@ export default function AdminLayout() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-800">Need Help?</p>
-                <p className="text-xs text-gray-500">Contact support team</p>
+                <p className="text-xs text-gray-500">developerfahim134@gmail.com</p>
               </div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Content */}
+
       <main className={`
         pt-16 transition-all duration-300
         ${sidebarOpen ? "lg:pl-64" : "lg:pl-0"}
       `}>
         <div className="p-4 sm:p-6 lg:p-8">
-          {/* Add Student Header for Students Page */}
+
           {isStudentsPage && (
             <div className="mb-6 md:hidden">
               <NavLink

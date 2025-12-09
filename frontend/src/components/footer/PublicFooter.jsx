@@ -138,14 +138,14 @@ export default function PublicFooter() {
           </div>
         </div>
 
-        {/* divider */}
+
         <div className="my-8 border-t border-gray-700"></div>
 
 
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="text-gray-400 text-sm">
             <p>
-              © {new Date().getFullYear()} <span className="text-white font-medium">YourSchool</span>. All Rights Reserved.
+              © {new Date().getFullYear()} <span className="text-white font-medium">YourSchool</span>. developed and maintained by <span className="text-white font-serif"><a href="https://fahim.in">Fahim Abdullah</a></span>
             </p>
           </div>
           

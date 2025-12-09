@@ -258,7 +258,6 @@ export default function TeacherList() {
     if (!window.confirm("Are you sure you want to delete this teacher?")) return;
 
     try {
-      // TODO: replace with your delete route when implemented
       await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/admin/removeTeacher/${teacherId}`,
         {

@@ -39,13 +39,13 @@ export default function Login() {
     if (name === "role") {
       switch(value) {
         case "admin":
-          setApiEndpoint("POST /api/v1/admin/login");
+          // setApiEndpoint("POST /api/v1/admin/login");
           break;
         case "teacher":
-          setApiEndpoint("POST /api/v1/teacher/login");
+          // setApiEndpoint("POST /api/v1/teacher/login");
           break;
         case "student":
-          setApiEndpoint("POST /api/v1/student/login");
+          // setApiEndpoint("POST /api/v1/student/login");
           break;
       }
     }
@@ -161,7 +161,7 @@ export default function Login() {
 
   useState(() => {
     fillCredentials("student");
-    setApiEndpoint("POST /api/v1/student/login");
+    // setApiEndpoint("POST /api/v1/student/login");
   }, []);
 
   return (
