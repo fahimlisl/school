@@ -41,8 +41,11 @@ const studentRegistration = asyncHandler(async (req, res) => {
     throw new ApiError(401, "user already exists");
   }
 
-  const passportPhotoFile = req.files?.passportPhoto[0]?.path;
-  const marskeehtPhotoFile = req.files?.marksheetPhoto[0]?.path;
+  // const passportPhotoFile = req.files?.passportPhoto[0]?.path;
+  // const marskeehtPhotoFile = req.files?.marksheetPhoto[0]?.path;
+  const passportPhotoFile = req.files?.passportPhoto[0].buffer;
+  const marskeehtPhotoFile = req.files?.marksheetPhoto[0].buffer;
+
 
   const passport = await uploadOnCloudinary(passportPhotoFile);
   const marksheet = await uploadOnCloudinary(marskeehtPhotoFile);
