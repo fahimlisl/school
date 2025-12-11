@@ -11,8 +11,8 @@ import { Teacher } from "../models/teacher.models.js";
 const subjectTemplate = {
   1: ["Math", "English", "Bengali", "SST", "Geography"],
   2: ["Math", "English", "Bengali", "SST", "Biology"],
-  3: ["Math", "English", "Physic", "Chemsitry", "SST"],
-  4: ["Math", "English", "Biology", "Chemsitry"],
+  3: ["Math", "English", "Physic", "Chemistry", "SST"],
+  4: ["Math", "English", "Biology", "Chemistry"],
 };
 
 const generateAccessAndRefreshToken = async function (userId) {

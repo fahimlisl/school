@@ -122,7 +122,7 @@ export default function Login() {
       color: "bg-blue-500",
       textColor: "text-blue-600",
       borderColor: "border-blue-200",
-      testCredentials: { email: "admin@school.edu", password: "admin123" }
+      testCredentials: { email: "fopopff@gmail.com", password: "test" }
     },
     { 
       value: "teacher", 
