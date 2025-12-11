@@ -68,12 +68,12 @@ export default function AdminLayout() {
       path: "/admin/teachers",
       count: 48
     },
-    // { 
-    //   icon: <BookOpen size={22} />, 
-    //   label: "Courses", 
-    //   path: "#",
-    //   badge: "Updated"
-    // },
+    { 
+      icon: <BookOpen size={22} />, 
+      label: "Fees", 
+      path: "#",
+      badge: "Updated"
+    },
     // { 
     //   icon: <CreditCard size={22} />, 
     //   label: "Finance", 
