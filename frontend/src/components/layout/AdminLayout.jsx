@@ -145,8 +145,8 @@ export default function AdminLayout() {
                   <School className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-gray-800">SchoolSync Pro</h1>
-                  <p className="text-xs text-gray-500">Administration Portal</p>
+                  <h1 className="text-lg font-bold text-gray-800">School</h1>
+                  <p className="text-xs text-gray-500">Admin Portal</p>
                 </div>
               </div>
             </div>
