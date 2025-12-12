@@ -28,6 +28,9 @@ import StudentDashboard from "./pages/student/StudentDashboard.jsx";
 import OnlineRegistration from "../src/pages/website/OnlineRegistration.jsx"
 import FetchList from "./pages/admin/onlineStudent/FetchList.jsx"
 
+// fees
+import FeeList from "./pages/admin/Fees/FeeList.jsx";
+
 
 export default function Router() {
   return (
@@ -62,6 +65,7 @@ export default function Router() {
         {/* <Route path="/admin/teachers" element={<TeacherList />} /> */}
         <Route path="teachers" element={<TeacherList />} />
         <Route path="online-students" element={<FetchList />} />
+        <Route path="fees" element={<FeeList />}/>
       </Route>
 
         <Route path="online-registration" element={<OnlineRegistration />} />

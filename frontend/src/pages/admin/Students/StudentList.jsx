@@ -201,13 +201,6 @@ const handleToggleFee = async (month) => {
   }
 };
 
-  const handelViewFeeCollection = async() => {
-    try {
-      
-    } catch (error) {
-      
-    }
-  }
 
   const handleUpdateStudent = async () => {
     try {
@@ -297,6 +290,7 @@ const handleToggleFee = async (month) => {
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </button>
+          // have to redirect to add studnet page
           <button className="flex items-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:shadow-lg transition">
             <Plus className="w-4 h-4 mr-2" />
             Add New Student
