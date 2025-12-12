@@ -71,8 +71,8 @@ export default function AdminLayout() {
     { 
       icon: <BookOpen size={22} />, 
       label: "Fees", 
-      path: "#",
-      badge: "Updated"
+      path: "/admin/fees",
+      badge: ""
     },
     // { 
     //   icon: <CreditCard size={22} />, 
