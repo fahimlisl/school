@@ -134,7 +134,7 @@ export default function TeacherList() {
     )
   ).length;
 
-  // ========= ADD TEACHER =========
+
   const toggleClassAssigned = (cls) => {
     setNewTeacher((prev) => {
       const exists = prev.classAssigned.includes(cls);
@@ -192,7 +192,7 @@ export default function TeacherList() {
     }
   };
 
-  // ========= EDIT TEACHER =========
+
   const openEditModal = (teacher) => {
     setEditTeacherId(teacher._id);
     setEditTeacherData({
@@ -252,8 +252,8 @@ export default function TeacherList() {
     }
   };
 
-  // ========= DELETE TEACHER (OPTIONAL) =========
-  // Only if/when you add delete endpoint in backend
+  // deleting teacher
+
   const handleDeleteTeacher = async (teacherId) => {
     if (!window.confirm("Are you sure you want to delete this teacher?")) return;
 
@@ -276,7 +276,7 @@ export default function TeacherList() {
     }
   };
 
-  // ========= PAGINATION =========
+  // pagination
   const indexOfLast = currentPage * teachersPerPage;
   const indexOfFirst = indexOfLast - teachersPerPage;
   const currentTeachers = filteredTeachers.slice(indexOfFirst, indexOfLast);
@@ -284,7 +284,7 @@ export default function TeacherList() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // ========= UI =========
+
   if (loading && teachers.length === 0) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -304,7 +304,7 @@ export default function TeacherList() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
@@ -333,7 +333,7 @@ export default function TeacherList() {
         </div>
       </div>
 
-      {/* Stats */}
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl p-4 shadow border border-gray-200">
           <div className="flex justify-between items-center">
@@ -378,10 +378,10 @@ export default function TeacherList() {
         </div>
       </div>
 
-      {/* Filters + Search */}
+
       <div className="bg-white rounded-2xl p-6 shadow border border-gray-200">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Subject Filter */}
+
           <div className="flex items-center space-x-2">
             <Filter className="w-4 h-4 text-gray-500" />
             <select
@@ -398,7 +398,7 @@ export default function TeacherList() {
             </select>
           </div>
 
-          {/* Search */}
+
           <div className="flex-1 max-w-md">
             <div className="relative">
               <Search
@@ -425,7 +425,7 @@ export default function TeacherList() {
         </div>
       </div>
 
-      {/* Teachers Table */}
+
       <div className="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
         <div className="p-6 border-b flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-800">
@@ -570,7 +570,7 @@ export default function TeacherList() {
           </table>
         </div>
 
-        {/* Pagination */}
+
         {filteredTeachers.length > 0 && (
           <div className="px-6 py-4 border-t">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -628,7 +628,7 @@ export default function TeacherList() {
         )}
       </div>
 
-      {/* ADD TEACHER MODAL */}
+
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-xl">
@@ -769,7 +769,7 @@ export default function TeacherList() {
         </div>
       )}
 
-      {/* EDIT TEACHER MODAL */}
+
       {showEditModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-xl">
