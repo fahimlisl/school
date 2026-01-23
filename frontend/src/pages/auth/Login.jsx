@@ -197,8 +197,8 @@ export default function Login() {
                   <p className="text-blue-100 text-lg leading-relaxed mb-8">
                     Access your personalized dashboard. One login for administrators, teachers, and students.
                   </p>
-                  <p className="text-blue-100 text-lg leading-relaxed mb-8">Initial login may take 30–40 seconds on this demo server.
-The production version delivered to you will have zero downtime.</p>
+                  {/* <p className="text-blue-100 text-lg leading-relaxed mb-8">Initial login may take 30–40 seconds on this demo server.
+The production version delivered to you will have zero downtime.</p> */} 
                   
 
                   <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-6 border border-white/20">
